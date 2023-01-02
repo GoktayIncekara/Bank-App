@@ -62,6 +62,59 @@ const currencies = new Map([
   ["GBP", "Pound sterling"],
 ]);
 
-const displayMovements = function (movements) {};
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = "";
+  movements.forEach(function (mov, i) {
+    const operation = mov > 0 ? "deposit" : "withdrawal";
+    const html = `
+    <div class="movements__row">
+      <div class="movements__type movements__type--${operation}">${
+      i + i
+    } ${operation} </div>
+      <div class="movements__date">3 days ago</div>
+      <div class="movements__value">${mov}$</div>
+    </div>`;
 
+    containerMovements.insertAdjacentHTML("afterbegin", html);
+  });
+};
+
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, cur) => acc + cur);
+  labelBalance.textContent = `${balance} EUR`;
+};
+
+const calcDisplaySummary = function (movements) {
+  const income = movements
+    .filter((mov) => mov > 0)
+    .reduce((acc, cur) => acc + cur);
+  const outcome = movements
+    .filter((mov) => mov < 0)
+    .reduce((acc, cur) => acc + cur);
+  const interest = movements
+    .filter((mov) => mov > 0)
+    .map((deposit) => (deposit * 1.2) / 100)
+    .filter((int) => int >= 1)
+    .reduce((acc, int) => acc + int);
+
+  labelSumIn.textContent = `${income} EUR`;
+  labelSumOut.textContent = `${Math.abs(outcome)} EUR`;
+  labelSumInterest.textContent = `${interest} EUR`;
+};
+
+//summary__value--in
+
+const createUsernames = function (accs) {
+  accs.forEach(function (acc) {
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(" ")
+      .map((name) => name[0])
+      .join("");
+  });
+};
+
+createUsernames(accounts);
 displayMovements(account1.movements);
+calcDisplayBalance(account1.movements);
+calcDisplaySummary(account1.movements);

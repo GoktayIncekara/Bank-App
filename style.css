@@ -1,7 +1,6 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
 }
 
 html {
@@ -38,7 +37,6 @@ nav {
 }
 
 .login__input {
-  border: none;
   padding: 0.5rem 2rem;
   font-size: 1.6rem;
   font-family: inherit;
@@ -81,14 +79,14 @@ nav {
 .app {
   position: relative;
   max-width: 100rem;
-  margin: 4rem auto;
+  margin: 3rem auto;
   display: grid;
   grid-template-columns: 4fr 3fr;
   grid-template-rows: auto repeat(3, 15rem) auto;
   gap: 2rem;
 
   /* This creates the fade in/out animation */
-  opacity: 0;
+  /*opacity: 0;*/
   transition: all 1s;
 }
 
@@ -97,7 +95,7 @@ nav {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .balance__label {
@@ -121,7 +119,7 @@ nav {
   grid-row: 2 / span 3;
   background-color: #fff;
   border-radius: 1rem;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .movements__row {
@@ -167,7 +165,7 @@ nav {
   display: flex;
   align-items: baseline;
   padding: 0 0.3rem;
-  margin-top: 1rem;
+  margin-top: 0.1rem;
 }
 
 .summary__label {
@@ -243,7 +241,7 @@ h2 {
 /* End exceptions */
 
 .form__input {
-  width: 100%;
+  width: 90%;
   border: none;
   background-color: rgba(255, 255, 255, 0.4);
   font-family: inherit;
@@ -281,7 +279,7 @@ h2 {
 
 .logout-timer {
   padding: 0 0.3rem;
-  margin-top: 1.9rem;
+  margin-top: 1rem;
   text-align: right;
   font-size: 1.25rem;
 }
