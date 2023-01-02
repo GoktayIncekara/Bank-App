@@ -23,7 +23,7 @@ const account3 = {
 
 const account4 = {
   owner: "Sarah Smith",
-  movements: [430, 1000, 700, 50, 90],
+  movements: [430, 1000, 700, 50, 90, -10],
   interestRate: 1,
   pin: 4444,
 };
@@ -62,6 +62,8 @@ const currencies = new Map([
   ["GBP", "Pound sterling"],
 ]);
 
+let currentAccount;
+
 const displayMovements = function (movements) {
   containerMovements.innerHTML = "";
   movements.forEach(function (mov, i) {
@@ -84,16 +86,16 @@ const calcDisplayBalance = function (movements) {
   labelBalance.textContent = `${balance} EUR`;
 };
 
-const calcDisplaySummary = function (movements) {
-  const income = movements
+const calcDisplaySummary = function (acc) {
+  const income = acc.movements
     .filter((mov) => mov > 0)
     .reduce((acc, cur) => acc + cur);
-  const outcome = movements
+  const outcome = acc.movements
     .filter((mov) => mov < 0)
     .reduce((acc, cur) => acc + cur);
-  const interest = movements
+  const interest = acc.movements
     .filter((mov) => mov > 0)
-    .map((deposit) => (deposit * 1.2) / 100)
+    .map((deposit) => (deposit * acc.interestRate) / 100)
     .filter((int) => int >= 1)
     .reduce((acc, int) => acc + int);
 
@@ -101,8 +103,6 @@ const calcDisplaySummary = function (movements) {
   labelSumOut.textContent = `${Math.abs(outcome)} EUR`;
   labelSumInterest.textContent = `${interest} EUR`;
 };
-
-//summary__value--in
 
 const createUsernames = function (accs) {
   accs.forEach(function (acc) {
@@ -115,6 +115,23 @@ const createUsernames = function (accs) {
 };
 
 createUsernames(accounts);
-displayMovements(account1.movements);
-calcDisplayBalance(account1.movements);
-calcDisplaySummary(account1.movements);
+
+btnLogin.addEventListener("click", function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    (acc) => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(" ")[0]
+    }`;
+    containerApp.style.opacity = 100;
+
+    inputLoginUsername.value = inputLoginPin.value = "";
+    inputLoginPin.blur();
+
+    displayMovements(currentAccount.movements);
+    calcDisplayBalance(currentAccount.movements);
+    calcDisplaySummary(currentAccount);
+  }
+});
