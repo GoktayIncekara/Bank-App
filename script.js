@@ -74,7 +74,7 @@ const currencies = new Map([
   ["GBP", "Pound sterling"],
 ]);
 
-let currentAccount;
+let currentAccount, timer;
 let sorted = false;
 
 const formatCurrency = function (amount, currency, locale) {
@@ -185,6 +185,26 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+const startLogOutTimer = function () {
+  let time = 5 * 60;
+
+  const tick = () => {
+    const minutes = Math.trunc(time / 60)
+      .toString()
+      .padStart(2, 0);
+    const seconds = (time % 60).toString().padStart(2, 0);
+    labelTimer.textContent = `${minutes}:${seconds}`;
+    time -= 1;
+    if (time === -1) {
+      clearInterval(logOutTimer);
+      labelWelcome.textContent = "Login to get started";
+      containerApp.style.opacity = 0;
+    }
+  };
+  tick();
+  return setInterval(tick, 1000);
+};
+
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
   currentAccount = accounts.find(
@@ -217,6 +237,10 @@ btnLogin.addEventListener("click", function (e) {
     );
 
     updateUI(currentAccount);
+
+    if (timer) clearInterval(timer);
+
+    timer = startLogOutTimer();
   }
 });
 
@@ -239,6 +263,8 @@ btnTransfer.addEventListener("click", function (e) {
     receiverAcc.movementsDates.push(new Date().toISOString());
 
     updateUI(currentAccount);
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -249,11 +275,15 @@ btnLoan.addEventListener("click", function (e) {
     amount > 0 &&
     currentAccount.movements.some((mov) => mov >= amount * 0.1)
   ) {
-    currentAccount.movements.push(amount);
-    currentAccount.movementsDates.push(new Date().toISOString());
-    updateUI(currentAccount);
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
+      currentAccount.movementsDates.push(new Date().toISOString());
+      updateUI(currentAccount);
+    }, 1500);
   }
   inputLoanAmount.value = "";
+  clearInterval(timer);
+  timer = startLogOutTimer();
 });
 
 btnClose.addEventListener("click", function (e) {
